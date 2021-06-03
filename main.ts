@@ -1,7 +1,37 @@
+bluetooth.onBluetoothConnected(function () {
+    bluetooth.startIOPinService()
+    temp = input.temperature()
+    for (let index = 0; index < 4; index++) {
+        basic.showLeds(`
+            . # # . .
+            # . # . #
+            . # # # .
+            # . # . #
+            . # # . .
+            `)
+        basic.pause(1000)
+        basic.showLeds(`
+            . . . . .
+            . . . . #
+            . . . # .
+            # . # . .
+            . # . . .
+            `)
+    }
+})
 input.onButtonPressed(Button.A, function () {
     turnon = 1
 })
 input.onPinPressed(TouchPin.P2, function () {
+    turnon = 0
+})
+input.onButtonPressed(Button.AB, function () {
+    pins.digitalWritePin(DigitalPin.P0, 0)
+})
+bluetooth.onUartDataReceived(serial.delimiters(Delimiters.Space), function () {
+    turnon = 1
+})
+input.onButtonPressed(Button.B, function () {
     pins.digitalWritePin(DigitalPin.P0, 1)
     basic.pause(2000)
     pins.digitalWritePin(DigitalPin.P0, 0)
@@ -10,10 +40,7 @@ input.onPinPressed(TouchPin.P2, function () {
     basic.pause(60000)
     temp = input.temperature()
 })
-input.onButtonPressed(Button.AB, function () {
-    pins.digitalWritePin(DigitalPin.P0, 0)
-})
-input.onButtonPressed(Button.B, function () {
+bluetooth.onUartDataReceived(serial.delimiters(Delimiters.Tab), function () {
     turnon = 0
 })
 let turnon = 0
@@ -22,12 +49,9 @@ temp = input.temperature()
 pins.digitalWritePin(DigitalPin.P0, 0)
 basic.forever(function () {
     pins.digitalWritePin(DigitalPin.P1, 1)
-    basic.pause(500)
+    basic.pause(1000)
     pins.digitalWritePin(DigitalPin.P1, 0)
-    basic.pause(500)
-})
-basic.forever(function () {
-	
+    basic.pause(1000)
 })
 basic.forever(function () {
     basic.pause(2000)
